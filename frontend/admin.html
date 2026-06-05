@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin | Renovação Barber Shop</title>
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <section id="reservas">
+    <div class="reservations-header">
+      <p class="section-tag">Painel Administrativo</p>
+      <h2>Agenda da <span>Renovação</span></h2>
+      <p class="booking-sub">Controle as reservas da barbearia.</p>
+    </div>
+
+    <div class="reservations-box">
+      <div class="reservation-search">
+        <input type="date" id="filterDate" />
+
+        <select id="filterProfessional">
+          <option value="">Todos profissionais</option>
+          <option value="paulo">Paulo Renovação</option>
+          <option value="eltin">Eltin dos Cortes</option>
+        </select>
+
+        <select id="filterStatus">
+          <option value="">Todos status</option>
+          <option value="confirmada">Confirmada</option>
+          <option value="cancelada">Cancelada</option>
+          <option value="finalizada">Finalizada</option>
+        </select>
+
+        <button class="btn-primary btn-form" id="applyFilters">Filtrar</button>
+        <button class="btn-outline" id="clearFilters">Limpar</button>
+      </div>
+
+      <div class="services-grid" style="margin-bottom: 2rem;">
+        <div class="service-card">
+          <div class="service-name">Reservas</div>
+          <div class="service-price" id="totalReservations">0</div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-name">Confirmadas</div>
+          <div class="service-price" id="confirmedReservations">0</div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-name">Faturamento Previsto</div>
+          <div class="service-price" id="expectedRevenue">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div id="adminReservationsList" class="reservations-list"></div>
+    </div>
+  </section>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

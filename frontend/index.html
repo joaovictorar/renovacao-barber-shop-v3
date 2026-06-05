@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Renovação Barber Shop | Agendamento Online</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">Renovação</a>
+
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#equipe">Equipe</a></li>
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#agendamento">Agendar</a></li>
+      <li><a href="#reservas">Reservas</a></li>
+      <li><a href="#localizacao">Localização</a></li>
+    </ul>
+
+    <a href="#agendamento" class="nav-cta">Agendar</a>
+
+    <button class="hamburger" id="menuBtn" aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="closeMenu">✕</button>
+    <a href="#sobre" onclick="closeMobile()">Sobre</a>
+    <a href="#equipe" onclick="closeMobile()">Equipe</a>
+    <a href="#servicos" onclick="closeMobile()">Serviços</a>
+    <a href="#agendamento" onclick="closeMobile()">Agendar</a>
+    <a href="#reservas" onclick="closeMobile()">Minhas Reservas</a>
+    <a href="#localizacao" onclick="closeMobile()">Localização</a>
+  </div>
+
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-line"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">Almenara, MG · Agendamento Online</div>
+
+      <div class="hero-brand reveal">
+        <img src="assets/img/fachada-renovacao.png" alt="Fachada Renovação Barber Shop">
+      </div>
+
+      <h1>Onde o<br>estilo<br>se <em>renova</em></h1>
+
+      <p class="hero-sub">
+        Escolha o serviço, selecione o profissional, escolha data e horário e confirme sua reserva online.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#agendamento" class="btn-primary">📅 Agendar Horário</a>
+        <a href="#reservas" class="btn-secondary">Ver minhas reservas →</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">2</div><div class="stat-label">Barbeiros</div></div>
+        <div class="stat"><div class="stat-num">6</div><div class="stat-label">Serviços</div></div>
+        <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Online</div></div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Role para baixo</span>
+    </div>
+  </section>
+
+  <section id="sobre">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-card">
+          <p class="about-quote">Corte, barba e estilo com atendimento profissional no coração de Almenara.</p>
+          <p class="about-author">— Renovação Barber Shop</p>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.15s">
+        <p class="section-tag">Sobre nós</p>
+        <h2>Arte e <span>precisão</span> em cada corte</h2>
+
+        <p class="about-text">
+          A Renovação Barber Shop une técnica, atendimento de qualidade e um ambiente confortável.
+          Agora, além de conhecer a barbearia pelo site, o cliente também pode reservar seu horário online.
+        </p>
+
+        <div class="about-features">
+          <div class="feat"><div class="feat-icon">✦</div><div class="feat-text"><strong>Agendamento Online</strong>O cliente escolhe serviço, profissional, data e horário.</div></div>
+          <div class="feat"><div class="feat-icon">✦</div><div class="feat-text"><strong>Equipe Profissional</strong>Paulo Renovação e Eltin dos Cortes.</div></div>
+          <div class="feat"><div class="feat-icon">✦</div><div class="feat-text"><strong>Controle de Reservas</strong>Consulta e cancelamento pelo próprio site.</div></div>
+          <div class="feat"><div class="feat-icon">✦</div><div class="feat-text"><strong>Localização Completa</strong>Google Maps integrado para chegar fácil.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipe">
+    <div class="team-header reveal">
+      <p class="section-tag">Nossa equipe</p>
+      <h2>Escolha seu <span>profissional</span></h2>
+      <p class="team-sub">No agendamento, você escolhe Paulo Renovação ou Eltin dos Cortes.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <img src="assets/img/paulo-renovacao.svg" alt="Paulo Renovação" class="team-photo">
+        <p class="team-role">Barbeiro</p>
+        <h3>Paulo Renovação</h3>
+        <p class="team-text">Especialista em cortes clássicos, modernos, degradê e acabamento masculino.</p>
+        <div class="team-actions">
+          <a href="https://www.instagram.com/paulorenovacao_/" target="_blank" class="team-link">Instagram</a>
+          <a href="#agendamento" class="team-schedule" data-select-professional="paulo">Agendar</a>
+        </div>
+      </div>
+
+      <div class="team-card reveal" style="transition-delay:0.12s">
+        <img src="assets/img/eltin-dos-cortes.svg" alt="Eltin dos Cortes" class="team-photo">
+        <p class="team-role">Barbeiro</p>
+        <h3>Eltin dos Cortes</h3>
+        <p class="team-text">Atendimento profissional com foco em estilo, precisão e acabamento de qualidade.</p>
+        <div class="team-actions">
+          <a href="https://www.instagram.com/eltin_dos_cortes/" target="_blank" class="team-link">Instagram</a>
+          <a href="#agendamento" class="team-schedule" data-select-professional="eltin">Agendar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicos">
+    <div class="services-header reveal">
+      <div>
+        <p class="section-tag">Serviços</p>
+        <h2>Escolha o <span>serviço</span></h2>
+      </div>
+      <a href="#agendamento" class="btn-primary" style="font-size:0.75rem;">Agendar agora →</a>
+    </div>
+    <div class="services-grid" id="servicesPreview"></div>
+  </section>
+
+  <section id="agendamento">
+    <div class="booking-header reveal">
+      <p class="section-tag">Agendamento Online</p>
+      <h2>Reserve seu <span>horário</span></h2>
+      <p class="booking-sub">Siga o passo a passo: serviço, profissional, data, horário e seus dados.</p>
+    </div>
+
+    <div class="booking-shell reveal">
+      <div class="booking-steps">
+        <div class="step-pill active" data-step-indicator="1">1. Serviço</div>
+        <div class="step-pill" data-step-indicator="2">2. Profissional</div>
+        <div class="step-pill" data-step-indicator="3">3. Data</div>
+        <div class="step-pill" data-step-indicator="4">4. Horário</div>
+        <div class="step-pill" data-step-indicator="5">5. Confirmar</div>
+      </div>
+
+      <div class="booking-panel">
+        <div class="booking-step active" data-step="1">
+          <h3>Escolha o serviço</h3>
+          <p>Selecione o serviço desejado para continuar.</p>
+          <div class="select-grid" id="serviceOptions"></div>
+        </div>
+
+        <div class="booking-step" data-step="2">
+          <h3>Escolha o profissional</h3>
+          <p>Escolha com quem deseja fazer o atendimento.</p>
+          <div class="professional-grid" id="professionalOptions"></div>
+        </div>
+
+        <div class="booking-step" data-step="3">
+          <h3>Escolha a data</h3>
+          <p>Selecione um dia disponível para atendimento.</p>
+          <div class="form-grid">
+            <label>Data<input type="date" id="bookingDate"></label>
+          </div>
+          <div class="booking-actions">
+            <button class="btn-outline" data-back="2">Voltar</button>
+            <button class="btn-primary btn-form" id="goToTimes">Continuar</button>
+          </div>
+        </div>
+
+        <div class="booking-step" data-step="4">
+          <h3>Escolha o horário</h3>
+          <p>Horários ocupados não ficam disponíveis para o mesmo profissional.</p>
+          <div class="time-grid" id="timeOptions"></div>
+          <div class="booking-actions">
+            <button class="btn-outline" data-back="3">Voltar</button>
+          </div>
+        </div>
+
+        <div class="booking-step" data-step="5">
+          <h3>Confirme seus dados</h3>
+          <p>Preencha as informações abaixo para finalizar a reserva.</p>
+          <div class="summary-card" id="bookingSummary"></div>
+          <form id="bookingForm" class="client-form">
+            <label>Seu nome<input type="text" id="clientName" placeholder="Ex: João Victor" required></label>
+            <label>WhatsApp<input type="tel" id="clientPhone" placeholder="Ex: (33) 99999-9999" required></label>
+            <label>Observação opcional<textarea id="clientNote" rows="3" placeholder="Ex: Quero degradê baixo..."></textarea></label>
+            <div class="booking-actions">
+              <button type="button" class="btn-outline" data-back="4">Voltar</button>
+              <button type="submit" class="btn-primary btn-form">Confirmar Reserva</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="booking-success" id="bookingSuccess">
+          <div class="success-icon">✓</div>
+          <h3>Reserva criada com sucesso!</h3>
+          <p>Você pode consultar ou cancelar em “Minhas Reservas”.</p>
+          <a href="#reservas" class="btn-primary">Ver minhas reservas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reservas">
+    <div class="reservations-header reveal">
+      <p class="section-tag">Minhas Reservas</p>
+      <h2>Consulte seus <span>agendamentos</span></h2>
+      <p class="booking-sub">As reservas ficam salvas neste navegador.</p>
+    </div>
+
+    <div class="reservations-box reveal">
+      <div class="reservation-search">
+        <input type="tel" id="searchPhone" placeholder="Digite seu WhatsApp para filtrar reservas">
+        <button class="btn-primary btn-form" id="filterReservations">Buscar</button>
+        <button class="btn-outline" id="clearFilter">Limpar</button>
+      </div>
+      <div id="reservationsList" class="reservations-list"></div>
+    </div>
+  </section>
+
+  <section id="localizacao">
+    <div class="map-header reveal">
+      <p class="section-tag">Localização</p>
+      <h2>Venha até a <span>Renovação</span></h2>
+      <p class="booking-sub">R. Antônio José Santana, Almenara – MG, 39900-000</p>
+    </div>
+
+    <div class="map-layout reveal">
+      <div class="map-info">
+        <h3>Renovação Barber Shop</h3>
+        <p><strong>Endereço:</strong> R. Antônio José Santana, Almenara – MG, 39900-000</p>
+        <p><strong>WhatsApp:</strong> (33) 99928-2037</p>
+        <p><strong>Horários:</strong> Segunda a sexta 08h às 12h/ 14h às 19h · Sábado 08h às 18h</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=R.%20Ant%C3%B4nio%20Jos%C3%A9%20Santana%2C%20Almenara%20MG%2039900-000" target="_blank" class="btn-primary btn-map">Abrir no Google Maps</a>
+      </div>
+
+      <div class="map-frame">
+        <iframe
+          src="https://www.google.com/maps?q=R.%20Ant%C3%B4nio%20Jos%C3%A9%20Santana%2C%20Almenara%20MG%2039900-000&output=embed"
+          width="100%" height="440" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contato">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#hero" class="nav-logo">Renovação</a>
+        <p>Barbearia moderna no coração de Almenara, MG. Agora com agendamento online próprio.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/paulorenovacao_/" target="_blank" class="social-btn" title="Paulo Renovação">P</a>
+          <a href="https://www.instagram.com/eltin_dos_cortes/" target="_blank" class="social-btn" title="Eltin dos Cortes">E</a>
+          <a href="https://wa.me/5533999282037" target="_blank" class="social-btn" title="Paulo">WAP</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Horários</h4>
+        <div class="open-now">● Consulte disponibilidade</div>
+        <div class="hours-row"><span class="day">Segunda</span><span>08h – 12h</span><span>14h – 19h</span></div>
+        <div class="hours-row"><span class="day">Terça</span><span>08h – 12h</span><span>14h – 19h</span></div>
+        <div class="hours-row"><span class="day">Quarta</span><span>08h – 12h</span><span>14h – 19h</span></div>
+        <div class="hours-row"><span class="day">Quinta</span><span>08h – 12h</span><span>14h – 19h</span></div>
+        <div class="hours-row"><span class="day">Sexta</span><span>08h – 12h</span><span>14h – 19h</span></div>
+        <div class="hours-row"><span class="day">Sábado</span><span>08h – 18h</span><span>14h – 19h</span></div>
+        <div class="hours-row"><span class="day">Domingo</span><span>Fechado</span></div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><span class="ico">📍</span> R. Antônio José Santana, Almenara – MG</li>
+          <li><span class="ico">📞</span> (33) 99928-2037</li>
+          <li><span class="ico">📸</span> <a href="https://www.instagram.com/paulorenovacao_/" target="_blank">@paulorenovacao_</a></li>
+          <li><span class="ico">📸</span> <a href="https://www.instagram.com/eltin_dos_cortes/" target="_blank">@eltin_dos_cortes</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Renovação Barber Shop · Almenara, MG</p>
+      <p>Sistema de agendamento online</p>
+    </div>
+  </footer>
+
+  <a href="#agendamento" class="schedule-float" title="Agendar horário">📅</a>
+  <a href="https://wa.me/5533999282037?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20a%20Renovação%20Barber%20Shop." class="wa-float" target="_blank" title="Chamar no WhatsApp">💬</a>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
