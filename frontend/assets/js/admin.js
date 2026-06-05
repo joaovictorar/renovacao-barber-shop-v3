@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/reservations";
+const API_URL = "https://renovacao-barber-api.onrender.com/api";
 
 function money(value) {
   return value.toLocaleString("pt-BR", {
