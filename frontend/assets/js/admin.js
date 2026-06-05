@@ -1,4 +1,4 @@
-const API_URL = "https://renovacao-barber-api.onrender.com/api";
+const API_URL = "https://renovacao-barber-api.onrender.com/api/reservations";
 
 function money(value) {
   return value.toLocaleString("pt-BR", {

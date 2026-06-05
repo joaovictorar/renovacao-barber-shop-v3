@@ -2,7 +2,7 @@
 // SISTEMA DE AGENDAMENTO - RENOVAÇÃO BARBER SHOP
 // Versão HTML/CSS/JS puro usando localStorage
 // ======================================================
-const API_URL = "https://renovacao-barber-api.onrender.com/api";
+const API_URL = "https://renovacao-barber-api.onrender.com/api/reservations";
 
 const SERVICES = [
   {
