@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | Renovação Barber Shop</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0f0f0f;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.login-box{
+width:400px;
+background:#151515;
+padding:40px;
+border:1px solid #d4af37;
+border-radius:12px;
+}
+
+h1{
+color:#d4af37;
+text-align:center;
+margin-bottom:30px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+background:#222;
+border:1px solid #333;
+color:#fff;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#d4af37;
+border:none;
+cursor:pointer;
+font-weight:bold;
+}
+
+#error{
+margin-top:15px;
+color:#ff4444;
+text-align:center;
+}
+</style>
+
+</head>
+<body>
+
+<div class="login-box">
+
+<h1>Painel Admin</h1>
+
+<form id="loginForm">
+
+<input
+type="email"
+id="email"
+placeholder="E-mail"
+required
+>
+
+<input
+type="password"
+id="password"
+placeholder="Senha"
+required
+>
+
+<button type="submit">
+Entrar
+</button>
+
+</form>
+
+<div id="error"></div>
+
+</div>
+
+<script src="./assets/js/admin-login.js"></script>
+
+</body>
+</html>

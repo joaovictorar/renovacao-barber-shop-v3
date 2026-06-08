@@ -1,3 +1,9 @@
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "./admin-login.html";
+}
+
 const API_URL = "https://renovacao-barber-api.onrender.com/api/reservations";
 
 const PROFESSIONALS = [
@@ -490,3 +496,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadReservations();
 });
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+
+  logoutBtn.addEventListener("click", () => {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.href = "./admin-login.html";
+
+  });
+
+}
