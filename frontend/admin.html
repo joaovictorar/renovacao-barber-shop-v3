@@ -1,66 +1,103 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Painel Admin | Renovação Barber Shop</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin | Renovação Barber Shop</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <section id="reservas">
+    <div class="reservations-header">
+      <p class="section-tag">Painel Administrativo</p>
+      <h2>Dashboard da <span>Renovação</span></h2>
+      <p class="booking-sub">Controle reservas, profissionais e faturamento.</p>
+      <button id="logoutBtn" class="btn-outline" style="margin-top:1rem;">Sair</button>
+    </div>
 
-    <link rel="stylesheet" href="assets/css/style.css" />
-  </head>
-  <body>
-    <section id="reservas">
-      <div class="reservations-header">
-        <p class="section-tag">Painel Administrativo</p>
-        <h2>Agenda da <span>Renovação</span></h2>
-        <p class="booking-sub">Controle as reservas da barbearia.</p>
+    <div class="reservations-box">
+      <div class="reservation-search">
+        <input type="date" id="filterDate" />
+        <select id="filterProfessional"></select>
+        <select id="filterStatus">
+          <option value="">Todos status</option>
+          <option value="confirmada">Confirmada</option>
+          <option value="cancelada">Cancelada</option>
+          <option value="finalizada">Finalizada</option>
+        </select>
+        <button class="btn-primary btn-form" id="applyFilters">Filtrar</button>
+        <button class="btn-outline" id="clearFilters">Limpar</button>
       </div>
 
-      <div class="reservations-box">
-        <div class="reservation-search">
-          <input type="date" id="filterDate" />
-
-          <select id="filterProfessional">
-            <option value="">Todos profissionais</option>
-            <option value="paulo">Paulo Renovação</option>
-            <option value="eltin">Eltin dos Cortes</option>
-          </select>
-
-          <select id="filterStatus">
-            <option value="">Todos status</option>
-            <option value="confirmada">Confirmada</option>
-            <option value="cancelada">Cancelada</option>
-            <option value="finalizada">Finalizada</option>
-          </select>
-
-          <button class="btn-primary btn-form" id="applyFilters">
-            Filtrar
-          </button>
-          <button class="btn-outline" id="clearFilters">Limpar</button>
+      <div class="services-grid" style="margin-bottom: 2rem">
+        <div class="service-card">
+          <div class="service-name">Reservas</div>
+          <div class="service-price" id="totalReservations">0</div>
         </div>
 
-        <div class="services-grid" style="margin-bottom: 2rem">
-          <div class="service-card">
-            <div class="service-name">Reservas</div>
-            <div class="service-price" id="totalReservations">0</div>
-          </div>
-
-          <div class="service-card">
-            <div class="service-name">Confirmadas</div>
-            <div class="service-price" id="confirmedReservations">0</div>
-          </div>
-
-          <div class="service-card">
-            <div class="service-name">Faturamento Previsto</div>
-            <div class="service-price" id="expectedRevenue">R$ 0,00</div>
-          </div>
+        <div class="service-card">
+          <div class="service-name">Confirmadas</div>
+          <div class="service-price" id="confirmedReservations">0</div>
         </div>
 
-        <div id="adminReservationsList" class="reservations-list"></div>
+        <div class="service-card">
+          <div class="service-name">Faturamento Previsto</div>
+          <div class="service-price" id="expectedRevenue">R$ 0,00</div>
+        </div>
       </div>
-    </section>
 
-    <button id="logoutBtn">Sair</button>
+      <div id="professionalSummary" class="services-grid" style="margin-bottom:2rem;"></div>
 
-    <script src="assets/js/admin.js"></script>
-  </body>
+      <div id="professionalTabs"></div>
+
+      <div id="scheduleGrid"></div>
+
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);margin:2rem 0 1rem;">
+        Reservas detalhadas
+      </h3>
+      <div id="adminReservationsList" class="reservations-list"></div>
+    </div>
+
+    <div class="reservations-box" style="margin-top:3rem;">
+      <div class="reservations-header" style="margin-bottom:2rem;">
+        <p class="section-tag">Profissionais</p>
+        <h2>Gerenciar <span>barbeiros</span></h2>
+        <p class="booking-sub">Cadastre novos barbeiros sem alterar o código.</p>
+      </div>
+
+      <form id="professionalForm" class="client-form" style="max-width:100%;">
+        <input type="hidden" id="professionalId" />
+
+        <label>Nome
+          <input type="text" id="professionalName" placeholder="Ex: João Barbeiro" required />
+        </label>
+
+        <label>WhatsApp
+          <input type="text" id="professionalWhatsapp" placeholder="Ex: 5533999999999" required />
+        </label>
+
+        <label>Instagram
+          <input type="text" id="professionalInstagram" placeholder="@instagram" />
+        </label>
+
+        <label>Foto
+          <input type="text" id="professionalPhoto" placeholder="/assets/img/foto.svg" />
+        </label>
+
+        <label>Bio
+          <textarea id="professionalBio" rows="3" placeholder="Especialidade do barbeiro"></textarea>
+        </label>
+
+        <div class="booking-actions">
+          <button type="submit" class="btn-primary btn-form">Salvar Profissional</button>
+          <button type="button" class="btn-outline" id="clearProfessionalForm">Limpar</button>
+        </div>
+      </form>
+
+      <div id="professionalsList" class="reservations-list" style="margin-top:2rem;"></div>
+    </div>
+  </section>
+
+  <script src="assets/js/admin.js"></script>
+</body>
 </html>

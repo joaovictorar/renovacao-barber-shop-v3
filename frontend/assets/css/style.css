@@ -1293,3 +1293,46 @@ footer {
     right: 1rem;
   }
 }
+
+#professionalTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 2rem;
+}
+
+#scheduleGrid {
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--black);
+  min-width: 760px;
+}
+
+.admin-table th,
+.admin-table td {
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  padding: 14px;
+  text-align: left;
+}
+
+.admin-table th {
+  color: var(--gold);
+}
+
+.admin-free {
+  color: var(--muted);
+}
+
+.admin-busy {
+  background: rgba(201, 168, 76, 0.06);
+  color: var(--muted);
+}
+
+.admin-reserved {
+  background: rgba(201, 168, 76, 0.12);
+}

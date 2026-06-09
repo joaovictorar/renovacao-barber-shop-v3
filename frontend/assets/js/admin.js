@@ -4,35 +4,19 @@ if (!token) {
   window.location.href = "./admin-login.html";
 }
 
-const API_URL = "https://renovacao-barber-api.onrender.com/api/reservations";
+const RESERVATIONS_API =
+  "https://renovacao-barber-api.onrender.com/api/reservations";
 
-const PROFESSIONALS = [
-  {
-    id: "paulo",
-    name: "Paulo Renovação",
-    whatsapp: "5533998316416",
-  },
-  {
-    id: "eltin",
-    name: "Eltin dos Cortes",
-    whatsapp: "5533998250865",
-  },
-];
-
-// Para adicionar novo barbeiro no futuro:
-// {
-//   id: "novo-barbeiro",
-//   name: "Nome do Barbeiro",
-//   whatsapp: "55DDDNUMERO",
-// }
+const PROFESSIONALS_API =
+  "https://renovacao-barber-api.onrender.com/api/professionals";
 
 const TIME_SLOTS = [
   "08:00", "08:40", "09:20", "10:00", "10:40", "11:20",
   "14:00", "14:40", "15:20", "16:00", "16:40", "17:20", "18:00", "18:40"
 ];
 
+let PROFESSIONALS = [];
 let activeProfessional = "all";
-let currentReservations = [];
 
 function money(value) {
   return Number(value || 0).toLocaleString("pt-BR", {
@@ -55,6 +39,15 @@ function timeToMinutes(time) {
   return hours * 60 + minutes;
 }
 
+function normalizeProfessionalId(professional) {
+  const name = professional.name.toLowerCase();
+
+  if (name.includes("paulo")) return "paulo";
+  if (name.includes("eltin")) return "eltin";
+
+  return professional._id;
+}
+
 async function getReservations(filters = {}) {
   const params = new URLSearchParams();
 
@@ -63,7 +56,9 @@ async function getReservations(filters = {}) {
     params.append("professionalId", filters.professionalId);
   }
 
-  const url = params.toString() ? `${API_URL}?${params.toString()}` : API_URL;
+  const url = params.toString()
+    ? `${RESERVATIONS_API}?${params.toString()}`
+    : RESERVATIONS_API;
 
   const response = await fetch(url);
 
@@ -82,8 +77,62 @@ async function getReservations(filters = {}) {
   return reservations;
 }
 
+async function getProfessionals() {
+  const response = await fetch(PROFESSIONALS_API);
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar profissionais.");
+  }
+
+  return await response.json();
+}
+
+async function createProfessional(data) {
+  const response = await fetch(PROFESSIONALS_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao cadastrar profissional.");
+  }
+
+  return await response.json();
+}
+
+async function updateProfessional(id, data) {
+  const response = await fetch(`${PROFESSIONALS_API}/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar profissional.");
+  }
+
+  return await response.json();
+}
+
+async function deleteProfessional(id) {
+  const response = await fetch(`${PROFESSIONALS_API}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao excluir profissional.");
+  }
+
+  return await response.json();
+}
+
 async function cancelReservation(id) {
-  const response = await fetch(`${API_URL}/${id}/cancel`, {
+  const response = await fetch(`${RESERVATIONS_API}/${id}/cancel`, {
     method: "PATCH",
   });
 
@@ -106,44 +155,20 @@ Horário: ${reservation.time}
 Status: ${reservation.status}`;
 }
 
-function setupAdminLayout() {
-  const reservationsBox = document.querySelector(".reservations-box");
-  const list = document.getElementById("adminReservationsList");
-
-  if (!document.getElementById("professionalTabs")) {
-    const tabs = document.createElement("div");
-    tabs.id = "professionalTabs";
-    tabs.style.display = "flex";
-    tabs.style.flexWrap = "wrap";
-    tabs.style.gap = "10px";
-    tabs.style.margin = "0 0 2rem";
-
-    reservationsBox.insertBefore(tabs, list);
-  }
-
-  if (!document.getElementById("scheduleGrid")) {
-    const schedule = document.createElement("div");
-    schedule.id = "scheduleGrid";
-    schedule.style.marginBottom = "2rem";
-    schedule.style.overflowX = "auto";
-
-    reservationsBox.insertBefore(schedule, list);
-  }
-
-  populateProfessionalFilter();
-  renderProfessionalTabs();
-}
-
 function populateProfessionalFilter() {
   const select = document.getElementById("filterProfessional");
-  if (!select) return;
 
   select.innerHTML = `
     <option value="">Todos profissionais</option>
-    ${PROFESSIONALS.map(
-    (professional) =>
-      `<option value="${professional.id}">${professional.name}</option>`
-  ).join("")}
+    ${PROFESSIONALS.map((professional) => {
+    const id = normalizeProfessionalId(professional);
+
+    return `
+        <option value="${id}">
+          ${professional.name}
+        </option>
+      `;
+  }).join("")}
   `;
 }
 
@@ -151,26 +176,28 @@ function renderProfessionalTabs() {
   const container = document.getElementById("professionalTabs");
 
   container.innerHTML = `
-    <button class="btn-outline" data-tab-professional="all">Todos</button>
-    ${PROFESSIONALS.map(
-    (professional) => `
-        <button class="btn-outline" data-tab-professional="${professional.id}">
+    <button class="btn-outline" data-tab-professional="all">
+      Todos
+    </button>
+
+    ${PROFESSIONALS.map((professional) => {
+    const id = normalizeProfessionalId(professional);
+
+    return `
+        <button class="btn-outline" data-tab-professional="${id}">
           ${professional.name}
         </button>
-      `
-  ).join("")}
+      `;
+  }).join("")}
   `;
 
   container.querySelectorAll("[data-tab-professional]").forEach((button) => {
-    button.style.borderColor =
-      button.dataset.tabProfessional === activeProfessional
-        ? "var(--gold)"
-        : "";
+    const isActive = button.dataset.tabProfessional === activeProfessional;
 
-    button.style.background =
-      button.dataset.tabProfessional === activeProfessional
-        ? "rgba(201,168,76,0.12)"
-        : "";
+    if (isActive) {
+      button.style.borderColor = "var(--gold)";
+      button.style.background = "rgba(201,168,76,0.12)";
+    }
 
     button.addEventListener("click", async () => {
       activeProfessional = button.dataset.tabProfessional;
@@ -182,6 +209,16 @@ function renderProfessionalTabs() {
       await loadReservations();
     });
   });
+}
+
+function getProfessionalsToShow() {
+  if (activeProfessional === "all") {
+    return PROFESSIONALS;
+  }
+
+  return PROFESSIONALS.filter(
+    (professional) => normalizeProfessionalId(professional) === activeProfessional
+  );
 }
 
 function updateStats(reservations) {
@@ -199,14 +236,6 @@ function updateStats(reservations) {
   document.getElementById("totalReservations").textContent = total;
   document.getElementById("confirmedReservations").textContent = confirmed.length;
   document.getElementById("expectedRevenue").textContent = money(revenue);
-}
-
-function getProfessionalsToShow() {
-  if (activeProfessional === "all") return PROFESSIONALS;
-
-  return PROFESSIONALS.filter(
-    (professional) => professional.id === activeProfessional
-  );
 }
 
 function getReservationForCell(professionalId, time, reservations) {
@@ -255,35 +284,32 @@ function getReservationForCell(professionalId, time, reservations) {
 function renderScheduleGrid(reservations) {
   const container = document.getElementById("scheduleGrid");
   const professionals = getProfessionalsToShow();
-
-  if (!professionals.length) {
-    container.innerHTML = `<div class="empty-state">Nenhum profissional encontrado.</div>`;
-    return;
-  }
-
   const selectedDate = document.getElementById("filterDate").value || todayISO();
 
   const dayReservations = reservations.filter(
     (reservation) => reservation.date === selectedDate
   );
 
+  if (!professionals.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        Nenhum profissional cadastrado.
+      </div>
+    `;
+    return;
+  }
+
   container.innerHTML = `
-    <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:1rem;color:var(--gold);">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);margin-bottom:1rem;">
       Agenda do dia ${formatDate(selectedDate)}
     </h3>
 
-    <table style="width:100%;border-collapse:collapse;background:var(--black);min-width:760px;">
+    <table class="admin-table">
       <thead>
         <tr>
-          <th style="border:1px solid rgba(201,168,76,0.2);padding:14px;color:var(--gold);text-align:left;">Horário</th>
+          <th>Horário</th>
           ${professionals
-      .map(
-        (professional) => `
-                <th style="border:1px solid rgba(201,168,76,0.2);padding:14px;color:var(--gold);text-align:left;">
-                  ${professional.name}
-                </th>
-              `
-      )
+      .map((professional) => `<th>${professional.name}</th>`)
       .join("")}
         </tr>
       </thead>
@@ -292,47 +318,38 @@ function renderScheduleGrid(reservations) {
         ${TIME_SLOTS.map(
         (time) => `
             <tr>
-              <td style="border:1px solid rgba(201,168,76,0.12);padding:14px;font-weight:700;color:var(--off-white);">
-                ${time}
-              </td>
+              <td><strong>${time}</strong></td>
 
               ${professionals
             .map((professional) => {
+              const professionalId = normalizeProfessionalId(professional);
+
               const cell = getReservationForCell(
-                professional.id,
+                professionalId,
                 time,
                 dayReservations
               );
 
               if (!cell) {
-                return `
-                      <td style="border:1px solid rgba(201,168,76,0.12);padding:14px;color:var(--muted);">
-                        Livre
-                      </td>
-                    `;
+                return `<td class="admin-free">Livre</td>`;
               }
 
               if (cell.type === "busy") {
-                return `
-                      <td style="border:1px solid rgba(201,168,76,0.12);padding:14px;color:var(--muted);background:rgba(201,168,76,0.05);">
-                        Ocupado
-                      </td>
-                    `;
+                return `<td class="admin-busy">Ocupado</td>`;
               }
 
               const reservation = cell.reservation;
 
               return `
-                    <td style="border:1px solid rgba(201,168,76,0.12);padding:14px;background:rgba(201,168,76,0.12);">
-                      <strong style="color:var(--gold);display:block;margin-bottom:5px;">
+                    <td class="admin-reserved">
+                      <strong style="color:var(--gold);display:block;">
                         ${reservation.clientName}
                       </strong>
-                      <span style="display:block;color:var(--off-white);font-size:0.85rem;">
-                        ${reservation.serviceName}
-                      </span>
-                      <span style="display:block;color:var(--light);font-size:0.78rem;margin-top:5px;">
+                      <span>${reservation.serviceName}</span>
+                      <br>
+                      <small>
                         ${reservation.serviceDuration} min · ${money(reservation.servicePrice)}
-                      </span>
+                      </small>
                     </td>
                   `;
             })
@@ -351,9 +368,11 @@ function renderProfessionalSummary(reservations) {
   if (!container) return;
 
   container.innerHTML = PROFESSIONALS.map((professional) => {
+    const professionalId = normalizeProfessionalId(professional);
+
     const professionalReservations = reservations.filter(
       (reservation) =>
-        reservation.professionalId === professional.id &&
+        reservation.professionalId === professionalId &&
         reservation.status === "confirmada"
     );
 
@@ -365,7 +384,9 @@ function renderProfessionalSummary(reservations) {
     return `
       <div class="service-card">
         <div class="service-name">${professional.name}</div>
-        <p class="service-desc">${professionalReservations.length} reservas confirmadas</p>
+        <p class="service-desc">
+          ${professionalReservations.length} reservas confirmadas
+        </p>
         <div class="service-price">${money(revenue)}</div>
       </div>
     `;
@@ -375,14 +396,16 @@ function renderProfessionalSummary(reservations) {
 function renderReservations(reservations) {
   const container = document.getElementById("adminReservationsList");
 
-  currentReservations = reservations;
-
   updateStats(reservations);
   renderScheduleGrid(reservations);
   renderProfessionalSummary(reservations);
 
   if (!reservations.length) {
-    container.innerHTML = `<div class="empty-state">Nenhuma reserva encontrada.</div>`;
+    container.innerHTML = `
+      <div class="empty-state">
+        Nenhuma reserva encontrada.
+      </div>
+    `;
     return;
   }
 
@@ -447,6 +470,87 @@ function renderReservations(reservations) {
   });
 }
 
+function renderProfessionalsList() {
+  const container = document.getElementById("professionalsList");
+
+  if (!PROFESSIONALS.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        Nenhum profissional cadastrado.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = PROFESSIONALS.map((professional) => `
+    <div class="reservation-card">
+      <h4>${professional.name}</h4>
+
+      <p><strong>WhatsApp:</strong> ${professional.whatsapp}</p>
+      <p><strong>Instagram:</strong> ${professional.instagram || "-"}</p>
+      <p><strong>Foto:</strong> ${professional.photo || "-"}</p>
+      <p><strong>Bio:</strong> ${professional.bio || "-"}</p>
+
+      <div class="reservation-actions">
+        <button class="btn-outline" data-edit-professional="${professional._id}">
+          Editar
+        </button>
+
+        <button class="btn-danger" data-delete-professional="${professional._id}">
+          Excluir
+        </button>
+      </div>
+    </div>
+  `).join("");
+
+  container.querySelectorAll("[data-edit-professional]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const professional = PROFESSIONALS.find(
+        (item) => item._id === button.dataset.editProfessional
+      );
+
+      document.getElementById("professionalId").value = professional._id;
+      document.getElementById("professionalName").value = professional.name;
+      document.getElementById("professionalWhatsapp").value = professional.whatsapp;
+      document.getElementById("professionalInstagram").value =
+        professional.instagram || "";
+      document.getElementById("professionalPhoto").value =
+        professional.photo || "";
+      document.getElementById("professionalBio").value =
+        professional.bio || "";
+
+      document.getElementById("professionalName").focus();
+    });
+  });
+
+  container.querySelectorAll("[data-delete-professional]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const confirmed = confirm("Deseja excluir este profissional?");
+      if (!confirmed) return;
+
+      try {
+        await deleteProfessional(button.dataset.deleteProfessional);
+        await loadProfessionals();
+        await loadReservations();
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+  });
+}
+
+async function loadProfessionals() {
+  try {
+    PROFESSIONALS = await getProfessionals();
+
+    populateProfessionalFilter();
+    renderProfessionalTabs();
+    renderProfessionalsList();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function loadReservations() {
   const selectedProfessional =
     activeProfessional === "all"
@@ -460,18 +564,70 @@ async function loadReservations() {
   };
 
   const container = document.getElementById("adminReservationsList");
-  container.innerHTML = `<div class="empty-state">Carregando reservas...</div>`;
+  container.innerHTML = `
+    <div class="empty-state">
+      Carregando reservas...
+    </div>
+  `;
 
   try {
     const reservations = await getReservations(filters);
     renderReservations(reservations);
   } catch (error) {
-    container.innerHTML = `<div class="empty-state">Erro ao carregar reservas.</div>`;
+    container.innerHTML = `
+      <div class="empty-state">
+        Erro ao carregar reservas.
+      </div>
+    `;
   }
 }
 
+function setupProfessionalForm() {
+  const form = document.getElementById("professionalForm");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const id = document.getElementById("professionalId").value;
+
+    const data = {
+      name: document.getElementById("professionalName").value.trim(),
+      whatsapp: document.getElementById("professionalWhatsapp").value.trim(),
+      instagram: document.getElementById("professionalInstagram").value.trim(),
+      photo: document.getElementById("professionalPhoto").value.trim(),
+      bio: document.getElementById("professionalBio").value.trim(),
+      active: true,
+    };
+
+    try {
+      if (id) {
+        await updateProfessional(id, data);
+      } else {
+        await createProfessional(data);
+      }
+
+      form.reset();
+      document.getElementById("professionalId").value = "";
+
+      await loadProfessionals();
+      await loadReservations();
+
+      alert("Profissional salvo com sucesso!");
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  document.getElementById("clearProfessionalForm").addEventListener("click", () => {
+    form.reset();
+    document.getElementById("professionalId").value = "";
+  });
+}
+
 document.getElementById("applyFilters").addEventListener("click", async () => {
-  activeProfessional = document.getElementById("filterProfessional").value || "all";
+  activeProfessional =
+    document.getElementById("filterProfessional").value || "all";
+
   renderProfessionalTabs();
   await loadReservations();
 });
@@ -482,32 +638,29 @@ document.getElementById("clearFilters").addEventListener("click", async () => {
   document.getElementById("filterStatus").value = "";
 
   activeProfessional = "all";
+
   renderProfessionalTabs();
-
-  await loadReservations();
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-  setupAdminLayout();
-
-  if (!document.getElementById("filterDate").value) {
-    document.getElementById("filterDate").value = todayISO();
-  }
-
   await loadReservations();
 });
 
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
-
   logoutBtn.addEventListener("click", () => {
-
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     window.location.href = "./admin-login.html";
-
   });
-
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!document.getElementById("filterDate").value) {
+    document.getElementById("filterDate").value = todayISO();
+  }
+
+  setupProfessionalForm();
+
+  await loadProfessionals();
+  await loadReservations();
+});
