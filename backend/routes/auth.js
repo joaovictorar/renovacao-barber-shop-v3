@@ -81,4 +81,44 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/create-barber-user", async (req, res) => {
+  try {
+    const { name, email, password, professionalId } = req.body;
+
+    const userExists = await Admin.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({
+        message: "Usuário já existe.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const barberUser = await Admin.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: "barbeiro",
+      professionalId,
+    });
+
+    return res.status(201).json({
+      message: "Usuário barbeiro criado com sucesso.",
+      user: {
+        id: barberUser._id,
+        name: barberUser.name,
+        email: barberUser.email,
+        role: barberUser.role,
+        professionalId: barberUser.professionalId,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao criar usuário barbeiro.",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

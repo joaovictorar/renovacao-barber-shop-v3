@@ -3,11 +3,13 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
+const clientRoutes = require("./routes/clients");
 const reservationRoutes = require("./routes/reservations");
 const authRoutes = require("./routes/auth");
 const professionalRoutes = require("./routes/professionals");
 
 const app = express();
+
 
 app.use(cors());
 app.use(express.json());
@@ -18,7 +20,7 @@ app.get("/", (req, res) => {
   });
 });
 
-
+app.use("/api/clients", clientRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/professionals", professionalRoutes);

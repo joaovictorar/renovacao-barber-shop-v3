@@ -1336,3 +1336,50 @@ footer {
 .admin-reserved {
   background: rgba(201, 168, 76, 0.12);
 }
+
+.manual-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.manual-modal.active {
+  display: flex;
+}
+
+.manual-modal-content {
+  width: min(100%, 620px);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--off-black);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  padding: 2rem;
+  position: relative;
+}
+
+.manual-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  color: var(--gold);
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+
+.admin-free {
+  cursor: pointer;
+}
+
+.admin-free:hover {
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--gold);
+}

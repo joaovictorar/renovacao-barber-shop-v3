@@ -1,103 +1,305 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Admin | Renovação Barber Shop</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body>
-  <section id="reservas">
-    <div class="reservations-header">
-      <p class="section-tag">Painel Administrativo</p>
-      <h2>Dashboard da <span>Renovação</span></h2>
-      <p class="booking-sub">Controle reservas, profissionais e faturamento.</p>
-      <button id="logoutBtn" class="btn-outline" style="margin-top:1rem;">Sair</button>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Admin | Renovação Barber Shop</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
 
-    <div class="reservations-box">
-      <div class="reservation-search">
-        <input type="date" id="filterDate" />
-        <select id="filterProfessional"></select>
-        <select id="filterStatus">
-          <option value="">Todos status</option>
-          <option value="confirmada">Confirmada</option>
-          <option value="cancelada">Cancelada</option>
-          <option value="finalizada">Finalizada</option>
-        </select>
-        <button class="btn-primary btn-form" id="applyFilters">Filtrar</button>
-        <button class="btn-outline" id="clearFilters">Limpar</button>
+  <body>
+    <section id="reservas">
+      <div class="reservations-header">
+        <p class="section-tag">Painel Administrativo</p>
+        <h2>Dashboard da <span>Renovação</span></h2>
+        <p class="booking-sub">
+          Controle reservas, profissionais, clientes e faturamento.
+        </p>
+        <button id="logoutBtn" class="btn-outline" style="margin-top: 1rem">
+          Sair
+        </button>
       </div>
 
-      <div class="services-grid" style="margin-bottom: 2rem">
-        <div class="service-card">
-          <div class="service-name">Reservas</div>
-          <div class="service-price" id="totalReservations">0</div>
+      <div class="reservations-box">
+        <div class="reservation-search">
+          <input type="date" id="filterDate" />
+
+          <select id="filterProfessional"></select>
+
+          <select id="filterStatus">
+            <option value="">Todos status</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="cancelada">Cancelada</option>
+            <option value="finalizada">Finalizada</option>
+          </select>
+
+          <button class="btn-primary btn-form" id="applyFilters">Filtrar</button>
+          <button class="btn-outline" id="clearFilters">Limpar</button>
         </div>
 
-        <div class="service-card">
-          <div class="service-name">Confirmadas</div>
-          <div class="service-price" id="confirmedReservations">0</div>
+        <div class="services-grid" style="margin-bottom: 2rem">
+          <div class="service-card">
+            <div class="service-name">Reservas Hoje</div>
+            <div class="service-price" id="todayReservations">0</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Faturamento Hoje</div>
+            <div class="service-price" id="todayRevenue">R$ 0,00</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Reservas Semana</div>
+            <div class="service-price" id="weekReservations">0</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Faturamento Semana</div>
+            <div class="service-price" id="weekRevenue">R$ 0,00</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Faturamento Mês</div>
+            <div class="service-price" id="monthRevenue">R$ 0,00</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Ticket Médio</div>
+            <div class="service-price" id="averageTicket">R$ 0,00</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Confirmadas</div>
+            <div class="service-price" id="confirmedReservations">0</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Total Geral</div>
+            <div class="service-price" id="totalReservations">0</div>
+          </div>
         </div>
 
-        <div class="service-card">
-          <div class="service-name">Faturamento Previsto</div>
-          <div class="service-price" id="expectedRevenue">R$ 0,00</div>
+        <div
+          id="professionalSummary"
+          class="services-grid"
+          style="margin-bottom: 2rem"
+        ></div>
+
+        <div id="professionalTabs"></div>
+
+        <div id="scheduleGrid"></div>
+
+        <div id="weeklyScheduleGrid"></div>
+
+        <h3
+          style="
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin: 2rem 0 1rem;
+          "
+        >
+          Reservas detalhadas
+        </h3>
+
+        <div id="adminReservationsList" class="reservations-list"></div>
+
+        <div class="reservations-box" style="margin-top: 2rem">
+          <div class="reservations-header">
+            <p class="section-tag">Clientes</p>
+            <h2>Histórico de <span>clientes</span></h2>
+            <p class="booking-sub">
+              Acompanhe clientes, atendimentos, retorno e total gasto.
+            </p>
+          </div>
+
+          <div id="clientsList"></div>
         </div>
       </div>
 
-      <div id="professionalSummary" class="services-grid" style="margin-bottom:2rem;"></div>
-
-      <div id="professionalTabs"></div>
-
-      <div id="scheduleGrid"></div>
-
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);margin:2rem 0 1rem;">
-        Reservas detalhadas
-      </h3>
-      <div id="adminReservationsList" class="reservations-list"></div>
-    </div>
-
-    <div class="reservations-box" style="margin-top:3rem;">
-      <div class="reservations-header" style="margin-bottom:2rem;">
-        <p class="section-tag">Profissionais</p>
-        <h2>Gerenciar <span>barbeiros</span></h2>
-        <p class="booking-sub">Cadastre novos barbeiros sem alterar o código.</p>
-      </div>
-
-      <form id="professionalForm" class="client-form" style="max-width:100%;">
-        <input type="hidden" id="professionalId" />
-
-        <label>Nome
-          <input type="text" id="professionalName" placeholder="Ex: João Barbeiro" required />
-        </label>
-
-        <label>WhatsApp
-          <input type="text" id="professionalWhatsapp" placeholder="Ex: 5533999999999" required />
-        </label>
-
-        <label>Instagram
-          <input type="text" id="professionalInstagram" placeholder="@instagram" />
-        </label>
-
-        <label>Foto
-          <input type="text" id="professionalPhoto" placeholder="/assets/img/foto.svg" />
-        </label>
-
-        <label>Bio
-          <textarea id="professionalBio" rows="3" placeholder="Especialidade do barbeiro"></textarea>
-        </label>
-
-        <div class="booking-actions">
-          <button type="submit" class="btn-primary btn-form">Salvar Profissional</button>
-          <button type="button" class="btn-outline" id="clearProfessionalForm">Limpar</button>
+      <div class="reservations-box" style="margin-top: 3rem">
+        <div class="reservations-header" style="margin-bottom: 2rem">
+          <p class="section-tag">Profissionais</p>
+          <h2>Gerenciar <span>barbeiros</span></h2>
+          <p class="booking-sub">
+            Cadastre novos barbeiros sem alterar o código.
+          </p>
         </div>
-      </form>
 
-      <div id="professionalsList" class="reservations-list" style="margin-top:2rem;"></div>
+        <form id="professionalForm" class="client-form" style="max-width: 100%">
+          <input type="hidden" id="professionalId" />
+
+          <label>
+            Nome
+            <input
+              type="text"
+              id="professionalName"
+              placeholder="Ex: João Barbeiro"
+              required
+            />
+          </label>
+
+          <label>
+            WhatsApp
+            <input
+              type="text"
+              id="professionalWhatsapp"
+              placeholder="Ex: 5533999999999"
+              required
+            />
+          </label>
+
+          <label>
+            Instagram
+            <input
+              type="text"
+              id="professionalInstagram"
+              placeholder="@instagram"
+            />
+          </label>
+
+          <label>
+            Foto
+            <input
+              type="text"
+              id="professionalPhoto"
+              placeholder="/assets/img/foto.svg"
+            />
+          </label>
+
+          <label>
+            Bio
+            <textarea
+              id="professionalBio"
+              rows="3"
+              placeholder="Especialidade do barbeiro"
+            ></textarea>
+          </label>
+
+          <div class="booking-actions">
+            <button type="submit" class="btn-primary btn-form">
+              Salvar Profissional
+            </button>
+
+            <button
+              type="button"
+              class="btn-outline"
+              id="clearProfessionalForm"
+            >
+              Limpar
+            </button>
+          </div>
+        </form>
+
+        <div
+          id="professionalsList"
+          class="reservations-list"
+          style="margin-top: 2rem"
+        ></div>
+      </div>
+    </section>
+
+    <div id="manualBookingModal" class="manual-modal">
+      <div class="manual-modal-content">
+        <button id="closeManualModal" class="manual-close">×</button>
+
+        <p class="section-tag">Novo agendamento</p>
+        <h2>Marcar <span>horário</span></h2>
+
+        <form id="manualBookingForm" class="client-form">
+          <input type="hidden" id="manualProfessionalId" />
+          <input type="hidden" id="manualProfessionalName" />
+          <input type="hidden" id="manualProfessionalWhatsapp" />
+          <input type="hidden" id="manualDate" />
+          <input type="hidden" id="manualTime" />
+
+          <label>
+            Profissional
+            <input type="text" id="manualProfessionalLabel" disabled />
+          </label>
+
+          <label>
+            Data e horário
+            <input type="text" id="manualDateTimeLabel" disabled />
+          </label>
+
+          <label>
+            Serviço
+            <select id="manualService" required>
+              <option value="">Selecione o serviço</option>
+              <option
+                value="corte"
+                data-name="Corte Masculino"
+                data-price="25"
+                data-duration="40"
+              >
+                Corte Masculino - R$25
+              </option>
+              <option
+                value="barba"
+                data-name="Barba"
+                data-price="20"
+                data-duration="30"
+              >
+                Barba - R$20
+              </option>
+              <option
+                value="combo"
+                data-name="Corte + Barba"
+                data-price="40"
+                data-duration="60"
+              >
+                Corte + Barba - R$40
+              </option>
+              <option
+                value="degrade"
+                data-name="Degradê"
+                data-price="30"
+                data-duration="50"
+              >
+                Degradê - R$30
+              </option>
+              <option
+                value="pigmentacao"
+                data-name="Pigmentação"
+                data-price="35"
+                data-duration="40"
+              >
+                Pigmentação - R$35
+              </option>
+              <option
+                value="sobrancelha"
+                data-name="Sobrancelha"
+                data-price="10"
+                data-duration="20"
+              >
+                Sobrancelha - R$10
+              </option>
+            </select>
+          </label>
+
+          <label>
+            Nome do cliente
+            <input type="text" id="manualClientName" required />
+          </label>
+
+          <label>
+            WhatsApp do cliente
+            <input type="text" id="manualClientPhone" required />
+          </label>
+
+          <label>
+            Observação
+            <textarea id="manualClientNote" rows="3"></textarea>
+          </label>
+
+          <button type="submit" class="btn-primary btn-form">
+            Confirmar agendamento
+          </button>
+        </form>
+      </div>
     </div>
-  </section>
 
-  <script src="assets/js/admin.js"></script>
-</body>
+    <script src="assets/js/admin.js"></script>
+  </body>
 </html>
