@@ -1253,7 +1253,6 @@ async function loadReservations() {
   }
 
   const filters = {
-    date: document.getElementById("filterDate").value,
     professionalId: selectedProfessional,
     status: document.getElementById("filterStatus").value,
   };
