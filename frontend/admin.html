@@ -33,7 +33,9 @@
             <option value="finalizada">Finalizada</option>
           </select>
 
-          <button class="btn-primary btn-form" id="applyFilters">Filtrar</button>
+          <button class="btn-primary btn-form" id="applyFilters">
+            Filtrar
+          </button>
           <button class="btn-outline" id="clearFilters">Limpar</button>
         </div>
 
@@ -69,6 +71,16 @@
           </div>
 
           <div class="service-card">
+            <div class="service-name">Comissão Total</div>
+            <div class="service-price" id="totalCommission">R$ 0,00</div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-name">Clientes</div>
+            <div class="service-price" id="dashboardTotalClients">0</div>
+          </div>
+
+          <div class="service-card">
             <div class="service-name">Confirmadas</div>
             <div class="service-price" id="confirmedReservations">0</div>
           </div>
@@ -77,6 +89,16 @@
             <div class="service-name">Total Geral</div>
             <div class="service-price" id="totalReservations">0</div>
           </div>
+        </div>
+
+        <div class="reservations-box" style="margin-bottom: 2rem">
+          <div class="reservations-header" style="margin-bottom: 2rem">
+            <p class="section-tag">Agenda</p>
+            <h2>Próximos <span>agendamentos</span></h2>
+            <p class="booking-sub">Veja os próximos horários confirmados.</p>
+          </div>
+
+          <div id="nextAppointmentsList" class="reservations-list"></div>
         </div>
 
         <div
@@ -93,7 +115,7 @@
 
         <h3
           style="
-            font-family: 'Cormorant Garamond', serif;
+            font-family: &quot;Cormorant Garamond&quot;, serif;
             font-size: 2rem;
             color: var(--gold);
             margin: 2rem 0 1rem;
@@ -112,12 +134,49 @@
               Acompanhe clientes, atendimentos, retorno e total gasto.
             </p>
           </div>
+          <div class="services-grid" style="margin-bottom: 2rem">
+            <div class="service-card">
+              <div class="service-name">Clientes Totais</div>
+              <div class="service-price" id="totalClients">0</div>
+            </div>
+
+            <div class="service-card">
+              <div class="service-name">Melhor Cliente</div>
+              <div class="service-price" id="bestClient">-</div>
+            </div>
+
+            <div class="service-card">
+              <div class="service-name">Total Gasto por Clientes</div>
+              <div class="service-price" id="clientsRevenue">R$ 0,00</div>
+            </div>
+          </div>
+
+          <h3
+            style="
+              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-size: 2rem;
+              color: var(--gold);
+              margin: 2rem 0 1rem;
+            "
+          >
+            Ranking de Clientes
+          </h3>
+
+          <div
+            id="clientsRanking"
+            class="reservations-list"
+            style="margin-bottom: 2rem"
+          ></div>
 
           <div id="clientsList"></div>
         </div>
       </div>
 
-      <div class="reservations-box" style="margin-top: 3rem">
+      <div
+        id="professionalManagementSection"
+        class="reservations-box"
+        style="margin-top: 3rem"
+      >
         <div class="reservations-header" style="margin-bottom: 2rem">
           <p class="section-tag">Profissionais</p>
           <h2>Gerenciar <span>barbeiros</span></h2>

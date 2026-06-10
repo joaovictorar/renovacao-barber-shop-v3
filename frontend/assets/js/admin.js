@@ -30,6 +30,35 @@ let PROFESSIONALS = [];
 let activeProfessional = "all";
 let currentWeekDate = todayISO();
 
+function applyRolePermissions() {
+
+  const user =
+    JSON.parse(localStorage.getItem("user")) || {};
+
+  const managementSection =
+    document.getElementById(
+      "professionalManagementSection"
+    );
+
+  if (
+    user.role === "barbeiro" &&
+    managementSection
+  ) {
+    managementSection.style.display = "none";
+  }
+
+  const professionalFilter =
+    document.getElementById("filterProfessional");
+
+  if (
+    user.role === "barbeiro" &&
+    professionalFilter
+  ) {
+    professionalFilter.parentElement.style.display = "none";
+  }
+
+}
+
 function money(value) {
   return Number(value || 0).toLocaleString("pt-BR", {
     style: "currency",
@@ -49,55 +78,144 @@ async function getClients() {
 
 async function loadClients() {
   try {
-
     const clients = await getClients();
 
-    const container =
+    const clientsList =
       document.getElementById("clientsList");
+
+    const rankingContainer =
+      document.getElementById("clientsRanking");
 
     if (!clients.length) {
 
-      container.innerHTML = `
+      document.getElementById("totalClients").textContent = "0";
+      document.getElementById("bestClient").textContent = "-";
+      document.getElementById("clientsRevenue").textContent = money(0);
+
+      const dashboardTotalClients =
+        document.getElementById("dashboardTotalClients");
+
+      if (dashboardTotalClients) {
+        dashboardTotalClients.textContent = "0";
+      }
+
+      clientsList.innerHTML = `
         <div class="empty-state">
           Nenhum cliente encontrado.
         </div>
       `;
 
+      rankingContainer.innerHTML = "";
+
       return;
     }
 
-    container.innerHTML = clients
-      .map(client => `
-        <div class="reservation-card">
+    const totalRevenue = clients.reduce(
+      (sum, client) =>
+        sum + Number(client.totalSpent || 0),
+      0
+    );
 
-          <h4>${client.name}</h4>
+    const sortedBySpent = [...clients].sort(
+      (a, b) =>
+        Number(b.totalSpent || 0) -
+        Number(a.totalSpent || 0)
+    );
 
-          <p>
-            <strong>WhatsApp:</strong>
-            ${client.phone}
-          </p>
+    const bestClient = sortedBySpent[0];
 
-          <p>
-            <strong>Total gasto:</strong>
-            ${money(client.totalSpent)}
-          </p>
+    document.getElementById("totalClients").textContent =
+      clients.length;
 
-          <p>
-            <strong>Atendimentos:</strong>
-            ${client.totalAppointments}
-          </p>
+    document.getElementById("bestClient").textContent =
+      bestClient.name;
 
-          <p>
-            <strong>Última visita:</strong>
-            ${client.lastAppointmentDate}
-          </p>
+    document.getElementById("clientsRevenue").textContent =
+      money(totalRevenue);
 
-        </div>
-      `)
+    const dashboardTotalClients =
+      document.getElementById("dashboardTotalClients");
+
+    if (dashboardTotalClients) {
+      dashboardTotalClients.textContent =
+        clients.length;
+    }
+
+    rankingContainer.innerHTML = sortedBySpent
+      .slice(0, 5)
+      .map(
+        (client, index) => `
+          <div class="reservation-card">
+
+            <h4>
+              #${index + 1} ${client.name}
+            </h4>
+
+            <p>
+              <strong>WhatsApp:</strong>
+              ${client.phone}
+            </p>
+
+            <p>
+              <strong>Total gasto:</strong>
+              ${money(client.totalSpent || 0)}
+            </p>
+
+            <p>
+              <strong>Atendimentos:</strong>
+              ${client.totalAppointments || 0}
+            </p>
+
+            <p>
+              <strong>Última visita:</strong>
+              ${client.lastAppointmentDate
+            ? formatDate(client.lastAppointmentDate)
+            : "-"
+          }
+            </p>
+
+          </div>
+        `
+      )
       .join("");
 
-  } catch(error) {
-    console.error(error);
+    clientsList.innerHTML = clients
+      .map(
+        (client) => `
+          <div class="reservation-card">
+
+            <h4>${client.name}</h4>
+
+            <p>
+              <strong>WhatsApp:</strong>
+              ${client.phone}
+            </p>
+
+            <p>
+              <strong>Total gasto:</strong>
+              ${money(client.totalSpent || 0)}
+            </p>
+
+            <p>
+              <strong>Atendimentos:</strong>
+              ${client.totalAppointments || 0}
+            </p>
+
+            <p>
+              <strong>Última visita:</strong>
+              ${client.lastAppointmentDate
+            ? formatDate(client.lastAppointmentDate)
+            : "-"
+          }
+            </p>
+
+          </div>
+        `
+      )
+      .join("");
+
+  } catch (error) {
+    console.error("Erro ao carregar clientes:", error);
   }
 }
 
@@ -405,6 +523,9 @@ function updateStats(reservations) {
       ) / confirmed.length
       : 0;
 
+  const COMMISSION_PERCENTAGE = 50;
+  const totalCommission = monthRevenue * (COMMISSION_PERCENTAGE / 100);
+
   document.getElementById("todayReservations").textContent =
     todayConfirmed.length;
 
@@ -428,6 +549,11 @@ function updateStats(reservations) {
 
   document.getElementById("totalReservations").textContent =
     reservations.length;
+
+  const totalCommissionEl = document.getElementById("totalCommission");
+  if (totalCommissionEl) {
+    totalCommissionEl.textContent = money(totalCommission);
+  }
 }
 
 function getReservationForCell(professionalId, time, reservations) {
@@ -629,7 +755,9 @@ function renderWeeklySchedule(reservations) {
   const container = document.getElementById("weeklyScheduleGrid");
   if (!container) return;
 
-  const selectedDate = currentWeekDate || document.getElementById("filterDate").value || todayISO();
+  const selectedDate =
+    currentWeekDate || document.getElementById("filterDate").value || todayISO();
+
   const weekDays = getWeekDays(selectedDate);
   const professionals = getProfessionalsToShow();
 
@@ -643,99 +771,158 @@ function renderWeeklySchedule(reservations) {
   }
 
   container.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin:2rem 0 1rem;">
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);">
-        Agenda semanal
-      </h3>
+    <div class="weekly-calendar-wrapper">
+      <div class="weekly-calendar-header">
+        <h3
+          style="
+            font-family:'Cormorant Garamond',serif;
+            font-size:2rem;
+            color:var(--gold);
+          "
+        >
+          Agenda semanal profissional
+        </h3>
 
-      <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
-        <button class="btn-outline" id="prevWeekBtn">◀ Semana anterior</button>
-        <button class="btn-outline" id="currentWeekBtn">Semana atual</button>
-        <button class="btn-outline" id="nextWeekBtn">Próxima semana ▶</button>
-      </div>
-    </div>
+        <div class="weekly-calendar-actions">
+          <button class="btn-outline" id="prevWeekBtn">
+            ◀ Semana anterior
+          </button>
 
-    ${professionals.map((professional) => {
-    const professionalId = normalizeProfessionalId(professional);
+          <button class="btn-outline" id="currentWeekBtn">
+            Semana atual
+          </button>
 
-    return `
-        <div style="margin-bottom:2.5rem;">
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--off-white);margin-bottom:1rem;">
-            ${professional.name}
-          </h4>
-
-          <div style="overflow-x:auto;">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Horário</th>
-                  ${weekDays.map((day) => `
-                    <th>
-                      ${day.label}<br>
-                      <small style="color:var(--light);font-weight:400;">
-                        ${formatDate(day.date)}
-                      </small>
-                    </th>
-                  `).join("")}
-                </tr>
-              </thead>
-
-              <tbody>
-                ${TIME_SLOTS.map((time) => `
-                  <tr>
-                    <td><strong>${time}</strong></td>
-
-                    ${weekDays.map((day) => {
-      const cell = getReservationForWeeklyCell(
-        professionalId,
-        day.date,
-        time,
-        reservations
-      );
-
-      if (!cell) {
-        return `
-    <td 
-      class="admin-free"
-      data-manual-booking="true"
-      data-professional-id="${professionalId}"
-      data-professional-name="${professional.name}"
-      data-professional-whatsapp="${professional.whatsapp}"
-      data-date="${day.date}"
-      data-time="${time}"
-    >
-      Livre
-    </td>
-  `;
-      }
-
-      if (cell.type === "busy") {
-        return `<td class="admin-busy">Ocupado</td>`;
-      }
-
-      const reservation = cell.reservation;
-
-      return `
-                        <td class="admin-reserved">
-                          <strong style="color:var(--gold);display:block;">
-                            ${reservation.clientName}
-                          </strong>
-                          <span>${reservation.serviceName}</span>
-                          <br>
-                          <small>
-                            ${reservation.serviceDuration} min · ${money(reservation.servicePrice)}
-                          </small>
-                        </td>
-                      `;
-    }).join("")}
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>
+          <button class="btn-outline" id="nextWeekBtn">
+            Próxima semana ▶
+          </button>
         </div>
-      `;
-  }).join("")}
+      </div>
+
+      <div class="weekly-legend">
+        <div class="legend-item">
+          <span class="legend-dot legend-free"></span>
+          Livre
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-dot legend-busy"></span>
+          Ocupado por duração
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-dot legend-confirmed"></span>
+          Confirmado
+        </div>
+      </div>
+
+      ${professionals
+      .map((professional) => {
+        const professionalId = normalizeProfessionalId(professional);
+
+        return `
+            <div class="weekly-professional-card">
+              <h4 class="weekly-professional-title">
+                ${professional.name}
+              </h4>
+
+              <div class="weekly-table-scroll">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Horário</th>
+
+                      ${weekDays
+            .map(
+              (day) => `
+                            <th>
+                              ${day.label}<br>
+                              <small style="color:var(--light);font-weight:400;">
+                                ${formatDate(day.date)}
+                              </small>
+                            </th>
+                          `
+            )
+            .join("")}
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    ${TIME_SLOTS.map(
+              (time) => `
+                        <tr>
+                          <td>
+                            <strong>${time}</strong>
+                          </td>
+
+                          ${weekDays
+                  .map((day) => {
+                    const cell = getReservationForWeeklyCell(
+                      professionalId,
+                      day.date,
+                      time,
+                      reservations
+                    );
+
+                    if (!cell) {
+                      return `
+                                  <td
+                                    class="weekly-cell-free"
+                                    data-manual-booking="true"
+                                    data-professional-id="${professionalId}"
+                                    data-professional-name="${professional.name}"
+                                    data-professional-whatsapp="${professional.whatsapp}"
+                                    data-date="${day.date}"
+                                    data-time="${time}"
+                                  >
+                                    Livre
+                                  </td>
+                                `;
+                    }
+
+                    if (cell.type === "busy") {
+                      return `
+                                  <td class="weekly-cell-busy">
+                                    Ocupado
+                                  </td>
+                                `;
+                    }
+
+                    const reservation = cell.reservation;
+
+                    return `
+                                <td class="weekly-cell-reserved">
+                                  <span class="weekly-client">
+                                    ${reservation.clientName}
+                                  </span>
+
+                                  <span class="weekly-service">
+                                    ${reservation.serviceName}
+                                  </span>
+
+                                  <span class="weekly-meta">
+                                    ${reservation.serviceDuration} min · ${money(
+                      reservation.servicePrice
+                    )}
+                                  </span>
+
+                                  <span class="weekly-meta">
+                                    ${reservation.clientPhone}
+                                  </span>
+                                </td>
+                              `;
+                  })
+                  .join("")}
+                        </tr>
+                      `
+            ).join("")}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+      })
+      .join("")}
+    </div>
   `;
 
   document.getElementById("prevWeekBtn").addEventListener("click", () => {
@@ -794,6 +981,90 @@ function renderProfessionalSummary(reservations) {
   }).join("");
 }
 
+function renderNextAppointments(reservations) {
+  const container = document.getElementById("nextAppointmentsList");
+
+  if (!container) return;
+
+  const now = new Date();
+
+  const nextAppointments = reservations
+    .filter((reservation) => {
+      if (
+        reservation.status !== "confirmada" &&
+        reservation.status !== "pendente"
+      ) {
+        return false;
+      }
+
+      const appointmentDate = new Date(
+        `${reservation.date}T${reservation.time}:00`
+      );
+
+      return appointmentDate >= now;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.time}:00`);
+      const dateB = new Date(`${b.date}T${b.time}:00`);
+
+      return dateA - dateB;
+    })
+    .slice(0, 5);
+
+  if (!nextAppointments.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        Nenhum próximo agendamento confirmado.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = nextAppointments
+    .map(
+      (reservation) => `
+        <div class="reservation-card">
+          <h4>${reservation.clientName}</h4>
+
+          <p>
+            <strong>Serviço:</strong>
+            ${reservation.serviceName}
+          </p>
+
+          <p>
+            <strong>Profissional:</strong>
+            ${reservation.professionalName}
+          </p>
+
+          <p>
+            <strong>Data:</strong>
+            ${formatDate(reservation.date)} às ${reservation.time}
+          </p>
+
+          <p>
+            <strong>Valor:</strong>
+            ${money(reservation.servicePrice)}
+          </p>
+
+          <div class="reservation-actions">
+            <a
+              class="btn-outline"
+              target="_blank"
+              href="https://wa.me/${reservation.clientPhone}?text=${encodeURIComponent(
+        `Olá ${reservation.clientName}! Passando para lembrar do seu horário na Renovação Barber Shop: ${reservation.serviceName}, dia ${formatDate(
+          reservation.date
+        )} às ${reservation.time}.`
+      )}"
+            >
+              Lembrar Cliente
+            </a>
+          </div>
+        </div>
+      `
+    )
+    .join("");
+}
+
 function renderReservations(reservations) {
   const container = document.getElementById("adminReservationsList");
 
@@ -801,6 +1072,7 @@ function renderReservations(reservations) {
   renderScheduleGrid(reservations);
   renderWeeklySchedule(reservations);
   renderProfessionalSummary(reservations);
+  renderNextAppointments(reservations);
 
   if (!reservations.length) {
     container.innerHTML = `
@@ -1159,6 +1431,9 @@ function setupManualBooking() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  applyRolePermissions();
+
   if (!document.getElementById("filterDate").value) {
     document.getElementById("filterDate").value = todayISO();
   }
