@@ -240,6 +240,11 @@ function timeToMinutes(time) {
 }
 
 function normalizeProfessionalId(professional) {
+  if (!professional) return "";
+
+  if (professional.slug) return professional.slug;
+  if (professional.id) return professional.id;
+
   const name = professional.name.toLowerCase();
 
   if (name.includes("paulo")) return "paulo";

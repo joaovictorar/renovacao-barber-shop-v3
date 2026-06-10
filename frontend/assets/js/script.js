@@ -539,12 +539,12 @@ function setupBookingForm() {
 
       const whatsappMessage = createWhatsappMessage(savedReservation);
 
-      window.open(
+      const whatsappUrl =
         `https://wa.me/${savedReservation.professionalWhatsapp}?text=${encodeURIComponent(
           whatsappMessage
-        )}`,
-        "_blank"
-      );
+        )}`;
+
+      window.location.href = whatsappUrl;
 
       bookingState = {
         serviceId: null,
@@ -630,28 +630,26 @@ async function renderReservations(filterPhone = "") {
             <p><strong>Valor:</strong> ${money(reservation.servicePrice)} · <strong>Duração:</strong> ${reservation.serviceDuration} min</p>
             <p><strong>Status:</strong> ${reservation.status}</p>
 
-            ${
-              reservation.clientNote
-                ? `<p><strong>Observação:</strong> ${reservation.clientNote}</p>`
-                : ""
-            }
+            ${reservation.clientNote
+            ? `<p><strong>Observação:</strong> ${reservation.clientNote}</p>`
+            : ""
+          }
 
             <div class="reservation-actions">
               <a
                 class="btn-outline"
                 target="_blank"
                 href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-          createWhatsappMessage(reservation)
-        )}"
+            createWhatsappMessage(reservation)
+          )}"
               >
                 Enviar para o profissional
               </a>
 
-              ${
-                reservation.status !== "cancelada"
-                  ? `<button class="btn-danger" data-cancel="${reservation._id}">Cancelar reserva</button>`
-                  : ""
-              }
+              ${reservation.status !== "cancelada"
+            ? `<button class="btn-danger" data-cancel="${reservation._id}">Cancelar reserva</button>`
+            : ""
+          }
             </div>
           </div>
         `;
